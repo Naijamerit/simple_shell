@@ -7,7 +7,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <errno.h>
-#include <fcnt1.h>
+#include <fcntl.h>
 #include <limits.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -91,7 +91,7 @@ typedef struct passinfo
 	int cmd_buf_type;
 	int readfd;
 	int histcount;
-} info_t
+} info_t;
 
 #define INFO_INIT \
 {NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
@@ -150,7 +150,7 @@ char **strtow(char *, char *);
 char **strtow2(char *, char);
 
 /* toem_realloc.c */
-char *_memset(char *, char, unsingned int);
+char *_memset(char *, char, unsigned int);
 void ffree(char **);
 void *_realloc(void *, unsigned int, unsigned int);
 
