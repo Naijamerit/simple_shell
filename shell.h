@@ -10,13 +10,14 @@
 #include <fcnt1.h>
 #include <limits.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 
 /* for read/write buffers */
 #define READ_BUF_SIZE 1024
 #define WRITE_BUF_SIZE 1024
 #define BUF_FLUSH -1
 
-/* for convert_number() */
+/* for command chaining */
 #define CMD_NORM     0
 #define CMD_OR       1
 #define CMD_AND      2
@@ -24,13 +25,13 @@
 
 /* for convert_number() */
 #define CONVERT_LOWERCASE  1
-#define CONVERT_UNISIGNED  2
+#define CONVERT_UNSIGNED  2
 
 /* 1 if using system getline() */
 #define USE_GETLINE 0
 #define USE_STRTOK 0
 
-#define HIST_FILE   ".simple linked list
+#define HIST_FILE   ".simple_shell_history"
 #define HIST_MAX     4096
 
 extern char **environ;
@@ -47,6 +48,7 @@ typedef struct liststr
 	char *str;
 	struct liststr *next;
 } list_t;
+
 /**
 *struct passinfo - contains pseudo-arguments to pass into a function
 *allowing uniform prototype for function pointer
@@ -92,8 +94,8 @@ typedef struct passinfo
 } info_t
 
 #define INFO_INIT \
-{NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL,
-	NULL, NULL, NULL, 0, 0, NULL, \, 0, 0, 0}
+{NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
+	0, 0, 0}
 
 /**
 * struct builtin - contains a builtin string and related function
@@ -103,7 +105,7 @@ typedef struct passinfo
 typedef struct builtin
 {
 	char *type;
-	int (*func) (info_t *);
+	int (*func)(info_t *);
 } builtin_table;
 
 /* toem_shloop.c */
@@ -123,7 +125,7 @@ int loophsh(char **);
 /* toem_errors.c */
 void _eputs(char *);
 int _eputchar(char);
-int _putsfd(char c, int fd);
+int _putfd(char c, int fd);
 int _putsfd(char *str, int fd);
 
 /* toem_string.c */
@@ -135,17 +137,17 @@ char *_strcat(char *, char *);
 /* toem_string1.c */
 char *_strcpy(char *, char *);
 char *_strdup(const char *);
-void _puts(char *,);
+void _puts(char *);
 int _putchar(char);
 
 /* toem_exits.c */
-char *_strcpy(char *, char *, int);
+char *_strncpy(char *, char *, int);
 char *_strncat(char *, char *, int);
-cahr *_strchr(char *, char);
+char *_strchr(char *, char);
 
 /* toem_tokenizer.c */
 char **strtow(char *, char *);
-chr **strtow2(char *, char);
+char **strtow2(char *, char);
 
 /* toem_realloc.c */
 char *_memset(char *, char, unsingned int);
@@ -179,8 +181,8 @@ int _myalias(info_t *);
 
 /* toem_getline.c */
 ssize_t get_input(info_t *);
-int _getline(info_t *, char **, size_t);
-void siginHandler(int);
+int _getline(info_t *, char **, size_t *);
+void sigintHandler(int);
 
 /* toem_getinfo.c */
 void clear_info(info_t *);
@@ -188,10 +190,10 @@ void set_info(info_t *, char **);
 void free_info(info_t *, int);
 
 /* toem_environ.c */
-char * _getenv(info_t *, const char *);
+char *_getenv(info_t *, const char *);
 int _myenv(info_t *);
 int _mysetenv(info_t *);
-int _myunsetenv(inf_t *);
+int _myunsetenv(info_t *);
 int populate_env_list(info_t *);
 
 /* toem_getenv.c  */
@@ -222,7 +224,7 @@ ssize_t get_node_index(list_t *, list_t *);
 
 /* toem_var.c */
 int is_chain(info_t *, char *, size_t *);
-void check_chain(info_t *, char *, size_t *, size_t , size_t);
+void check_chain(info_t *, char *, size_t *, size_t, size_t);
 int replace_alias(info_t *);
 int replace_vars(info_t *);
 int replace_string(char **, char *);
