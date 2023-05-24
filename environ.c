@@ -45,8 +45,22 @@ int _mysetenv(info_t *info)
 {
 	if (info->argc != 3)
 	{
+<<<<<<< HEAD
 		_eputs("Incorrect number of arguements\n");
 		return (1);
+=======
+	write(STDOUT_FILENO, "osh> ", 5);
+	fgets(line, MAX_LINE, stdin);
+	line[strcspn(line, "\n")] = '\0';
+
+	int i = 0;
+
+	args[i] = strtok(line, " ");
+	while (args[i] != NULL)
+	{
+	i++;
+	rgs[i] = strtok(NULL, " ");
+>>>>>>> 59b7a9c (myshell project)
 	}
 	if (_setenv(info, info->argv[1], info->argv[2]))
 		return (0);
